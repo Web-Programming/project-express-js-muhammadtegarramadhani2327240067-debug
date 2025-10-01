@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "name": "Laptop Gaming",
+        "price": 15000000,
+        "description": "Laptop berperforma tinggi untuk kebutuhan gaming anda"
+    },
+    {
+        "id": 2,
+        "name": "Smartphone Flagship",
+        "price": 12000000,
+        "description": "Smartphone dengan performa terbaik dan kamera berkualitas"
+    },
+    {
+        "id": 3,
+        "name": "Headphone Wireless",
+        "price": 2500000,
+        "description": "Headphone nirkabel dengan suara jernih dan bass kuat"
+    },
+    {
+        "id": 4,
+        "name": "Smartwatch",
+        "price": 3500000,
+        "description": "Jam tangan pintar dengan fitur pelacak kesehatan"
+    },
+    {
+        "id": 5,
+        "name": "Tablet Android",
+        "price": 4500000,
+        "description": "Tablet serbaguna untuk hiburan dan produktivitas"
+    },
+    {
+        "id": 6,
+        "name": "Monitor 24 Inch",
+        "price": 2200000,
+        "description": "Monitor full HD dengan panel IPS untuk kenyamanan visual"
+    },
+    {
+        "id": 7,
+        "name": "Keyboard Mechanical",
+        "price": 1200000,
+        "description": "Keyboard mekanik dengan switch tactile dan lampu RGB"
+    },
+    {
+        "id": 8,
+        "name": "Mouse Gaming",
+        "price": 700000,
+        "description": "Mouse dengan sensor presisi tinggi dan desain ergonomis"
+    },
+    {
+        "id": 9,
+        "name": "Speaker Bluetooth",
+        "price": 950000,
+        "description": "Speaker portabel dengan kualitas suara yang jernih"
+    },
+    {
+        "id": 10,
+        "name": "Printer Inkjet",
+        "price": 1800000,
+        "description": "Printer hemat tinta untuk kebutuhan rumah atau kantor"
+    },
+    {
+        "id": 11,
+        "name": "Router WiFi 6",
+        "price": 1600000,
+        "description": "Router kecepatan tinggi dengan teknologi WiFi terbaru"
+    },
+    {
+        "id": 12,
+        "name": "Webcam HD",
+        "price": 850000,
+        "description": "Webcam dengan resolusi tinggi untuk keperluan meeting online"
+    },
+    {
+        "id": 13,
+        "name": "External Hard Drive 1TB",
+        "price": 1100000,
+        "description": "Penyimpanan eksternal untuk backup data penting"
+    },
+    {
+        "id": 14,
+        "name": "SSD NVMe 512GB",
+        "price": 1300000,
+        "description": "SSD kecepatan tinggi untuk upgrade performa laptop/PC"
+    },
+    {
+        "id": 15,
+        "name": "Power Bank 20000mAh",
+        "price": 600000,
+        "description": "Power bank kapasitas besar dengan fitur fast charging"
+    },
+    {
+        "id": 16,
+        "name": "Kamera Mirrorless",
+        "price": 9500000,
+        "description": "Kamera ringan dengan hasil foto profesional"
+    },
+    {
+        "id": 17,
+        "name": "Tripod Kamera",
+        "price": 450000,
+        "description": "Tripod stabil dan ringan untuk fotografi dan video"
+    },
+    {
+        "id": 18,
+        "name": "Mic Condenser",
+        "price": 1300000,
+        "description": "Microphone berkualitas tinggi untuk rekaman dan streaming"
+    },
+    {
+        "id": 19,
+        "name": "PC All-in-One",
+        "price": 8500000,
+        "description": "PC praktis dengan desain minimalis dan performa stabil"
+    },
+    {
+        "id": 20,
+        "name": "VR Headset",
+        "price": 10500000,
+        "description": "Headset realitas virtual untuk pengalaman imersif"
+    }
+]
