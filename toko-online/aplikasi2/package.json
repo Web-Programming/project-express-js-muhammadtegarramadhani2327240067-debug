@@ -1,0 +1,15 @@
+{
+  "name": "aplikasi2",
+  "version": "1.0.0",
+  "description": "ini adalah aplikasi kedua saya",
+  "license": "ISC",
+  "author": "Arya",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
