@@ -10,6 +10,7 @@ var usersRouter = require('./app_toko_online/routes/users');
 var productRouter = require("./app_toko_online/routes/product"); //letakkan di atas agar rapi
 var engine = require('ejs-blocks'); //menggunakan ejs block
 var app = express();
+require('./app_toko_online/models')
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app_toko_online', 'views')); //perbaikan 1
