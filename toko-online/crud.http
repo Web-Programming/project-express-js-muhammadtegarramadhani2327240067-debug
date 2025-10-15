@@ -1,10 +1,28 @@
-GET http://localhost:3000/api/products
+### GET All Product
+GET http://localhost:3000/api/produk
 
-POST http://localhost:3000/api/products
-Content-Type: application/json
+### Insert New Product
+POST http://localhost:3000/api/produk
+content-type: application/json
+
 {
-    "name": "Product A",
-    "price": 100,
-    "description": "Description of Product A",
-    "stock": 50
+    "name": "Keyboard",
+    "price": "1",
+    "description" : "Hyper sensitive keyboard",
+    "stock" : 1
 }
+
+### Detail Product
+GET http://localhost:3000/api/produk/68ecc2774d49272f5636f31f
+
+### Update Product
+PUT http://localhost:3000/api/produk/68ecc2774d49272f5636f31f
+content-type: application/json
+
+{
+    "price": "600000",
+    "stock" : 5
+}
+
+### Delete Product
+DELETE http://localhost:3000/api/produk/68ecc2774d49272f5636f31f
