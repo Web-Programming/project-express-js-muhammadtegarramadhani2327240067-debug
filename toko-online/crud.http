@@ -1,5 +1,6 @@
 ### GET All Product
 GET http://localhost:3000/api/produk
+content-type: application/json
 
 ### Insert New Product
 POST http://localhost:3000/api/produk
