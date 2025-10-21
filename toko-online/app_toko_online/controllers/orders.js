@@ -1,85 +1,149 @@
-// ../controllers/order.js
 const Order = require('../models/orders');
-const mongoose = require('mongoose');
+const Product = require('../models/products');
 
-// CREATE Order — hitung totalAmount sebelum simpan
-exports.createOrder = async (req, res) => {
+// @desc    Membuat Pesanan Baru
+const create = async (req, res) => {
+  const { user, orderItems } = req.body;
+  
   try {
-    const { user, orderItems, status } = req.body;
+    let totalAmount = 0;
+    const itemsWithPrice = [];
 
-    if (!user || !orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
-      return res.status(400).json({ message: 'user dan orderItems (minimal 1) wajib diisi' });
+    // 1. Validasi dan hitung total harga
+    for (const item of orderItems) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res.status(404).json({ 
+          success: false, 
+          message: `Produk dengan ID ${item.product} tidak ditemukan.` 
+        });
+      }
+
+      // Hitung total harga dan simpan harga saat ini (priceAtOrder)
+      const itemTotal = product.price * item.quantity;
+      totalAmount += itemTotal;
+      
+      itemsWithPrice.push({
+        product: item.product,
+        quantity: item.quantity,
+        priceAtOrder: product.price, // Ambil harga real-time dari DB
+      });
     }
 
-    // hitung totalAmount = sum(quantity * priceAtOrder)
-    const totalAmount = orderItems.reduce((sum, item) => {
-      const qty = Number(item.quantity) || 0;
-      const price = Number(item.priceAtOrder) || 0;
-      return sum + (qty * price);
-    }, 0);
-
-    const order = new Order({
+    // 2. Buat objek Order baru
+    const newOrder = new Order({
       user,
-      orderItems,
+      orderItems: itemsWithPrice,
       totalAmount,
-      status
     });
 
-    const saved = await order.save();
-    // populate user (basic)
-    await saved.populate('user', 'username email address isAdmin').execPopulate();
+    // 3. Simpan ke database
+    const order = await newOrder.save();
 
-    res.status(201).json(saved);
+    res.status(201).json({ 
+      success: true, 
+      message: 'Pesanan berhasil dibuat.', 
+      data: order 
+    });
   } catch (err) {
     console.error(err);
-    if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
-    res.status(500).json({ message: 'Terjadi kesalahan server' });
-  }
-};
-
-// GET all orders (populate user)
-exports.getAllOrders = async (req, res) => {
-  try {
-    const orders = await Order.find().populate('user', 'username email address isAdmin');
-    res.status(200).json(orders);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Terjadi kesalahan server' });
-  }
-};
-
-// GET one order by id (populate user and orderItems.product)
-exports.getOrderById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: 'ID order tidak valid' });
-
-    const order = await Order.findById(id)
-      .populate('user', 'username email address isAdmin')
-      .populate('orderItems.product');
-    if (!order) return res.status(404).json({ message: 'Order tidak ditemukan' });
-    res.status(200).json(order);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Terjadi kesalahan server' });
-  }
-};
-
-// UPDATE status saja
-exports.updateOrderStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    if (!status) return res.status(400).json({ message: 'status wajib diisi' });
-    // validasi enum handled by mongoose if use findByIdAndUpdate with runValidators
-    const updated = await Order.findByIdAndUpdate(id, { status }, { new: true, runValidators: true })
-      .populate('user', 'username email address isAdmin')
-      .populate('orderItems.product');
-    if (!updated) return res.status(404).json({ message: 'Order tidak ditemukan' });
-    res.status(200).json(updated);
-  } catch (err) {
-    console.error(err);
-    if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
-    res.status(500).json({ message: 'Terjadi kesalahan server' });
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ 
+        success: false, 
+        message: err.message 
+      });
     }
+    res.status(500).json({ 
+      success: false, 
+      message: 'Kesalahan Server Internal.' 
+    });
+  }
+};
+
+// @desc    Mengambil Semua Pesanan (Dibatasi Admin)
+const all = async (req, res) => {
+  try {
+    // .populate('user', 'username email') hanya mengambil bidang username dan email dari model User
+    const orders = await Order.find()
+      .populate('user', 'username email') 
+      .sort({ orderDate: -1 });
+
+    res.status(200).json({ 
+      success: true, 
+      count: orders.length, 
+      data: orders 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Gagal mengambil data pesanan.' 
+    });
+  }
+};
+
+// @desc    Mengambil Detail Pesanan
+const detail = async (req, res) => {
+  try {
+    // .populate() bersarang untuk mengambil detail User dan detail Produk dari OrderItems
+    const order = await Order.findById(req.params.id)
+      .populate('user', 'username email address')
+      .populate('orderItems.product', 'name price'); // Ambil nama & harga dari produk
+
+    if (!order) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Pesanan tidak ditemukan.' 
+      });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      data: order 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Kesalahan Server Internal.' 
+    });
+  }
+};
+
+// @desc    Memperbarui Status Pesanan
+const update = async (req, res) => {
+  // Hanya izinkan pembaruan status
+  const updateFields = {
+    status: req.body.status,
+  };
+  
+  try {
+    const order = await Order.findByIdAndUpdate(req.params.id, updateFields, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!order) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Pesanan tidak ditemukan.' 
+      });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Status pesanan berhasil diperbarui.', 
+      data: order 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Kesalahan Server Internal. : ' + err.message
+    });
+  }
+};
+
+module.exports = {
+  create,
+  all,
+  detail,
+  update
 };
